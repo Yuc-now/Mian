@@ -165,29 +165,80 @@ body {
   margin: 0;
 }
 
-/* 响应式媒体查询：屏幕宽度≤768px（手机/平板）时生效 */
-@media (max-width: 768px) {
-  /* 手机端：卡片占满屏幕宽度，没有最大宽度限制 */
-  .comic-card {
-    max-width: 100%;
-  }
-  /* 手机端：图片最大高度缩小，避免占满屏幕 */
-  .comic-card img {
-    max-height: 300px;
-    /* 可选：如果想让手机端图片更窄，可加 max-width: 90%; */
-  }
-}
-
-/* 可选：再加一个平板适配（屏幕≤1024px） */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .comic-card img {
-    max-height: 350px; /* 平板端图片高度介于手机和电脑之间 */
-  }
-}
-
 /* 滚动条美化 */
 .left::-webkit-scrollbar { width: 6px }
 .left::-webkit-scrollbar-thumb { background: #555; border-radius: 10px }
+
+/* ========== 核心优化：手机端适配（解决拥挤） ========== */
+/* 手机端（屏幕≤768px） */
+@media (max-width: 768px) {
+  /* 1. 主布局从左右分栏改为上下堆叠 */
+  .wrap {
+    flex-direction: column;
+    margin-top: -50px;
+    padding: 0 10px;
+    gap: 15px;
+  }
+
+  /* 2. 左侧列表改为横向滚动，缩小高度，不占垂直空间 */
+  .left {
+    width: 100%;
+    max-height: 120px;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-right: 0;
+    padding-bottom: 8px;
+  }
+  .item {
+    min-width: 140px;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+  }
+  .item img {
+    width: 50px;
+    height: 50px;
+  }
+  .item .title {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  .item .info {
+    display: none; /* 隐藏多余文字，节省空间 */
+  }
+
+  /* 3. 右侧展示区缩小内边距，图片更适配手机 */
+  .right {
+    min-height: auto;
+    padding: 15px;
+  }
+  .comic-group {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px; /* 缩小图片间距，更宽松 */
+  }
+  .comic-card img {
+    max-height: 200px; /* 缩小手机端图片高度 */
+  }
+
+  /* 4. 顶部横幅缩小高度，适配手机屏幕 */
+  .banner {
+    height: 200px;
+  }
+}
+
+/* 平板端（769px~1024px） */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .comic-card img {
+    max-height: 350px;
+  }
+  .wrap {
+    gap: 20px;
+    padding: 0 15px;
+  }
+}
 </style>
 </head>
 
@@ -205,7 +256,7 @@ body {
                 <div class="title">目录</div>
             </div>
         </div>
-        <div class="item active" data-group="group1">
+        <div class="item" data-group="group1">
             <img src="11.jpg"  alt="fine相关">
             <div class="text">
                 <div class="title">fine相关</div>
@@ -305,9 +356,9 @@ body {
         </div>
     </div>
 
-    <!-- 右侧：多图水墨晕染展示区 -->
+    <!-- 右侧：多图水墨晕染展示区（恢复完整跳转） -->
     <div class="right" id="previewArea">
-        <!-- 修复：新增group0（目录组），避免点击目录时无内容 -->
+        <!-- 目录组 -->
         <div class="comic-group active" id="group0">
             <div class="comic-card">
                 <img src="ens.jpg">
@@ -315,9 +366,8 @@ body {
             </div>
         </div>
 
+        <!-- fine相关（恢复fine.html/qiren.html跳转） -->
         <div class="comic-group" id="group1">
-            <!-- 修复1：去掉不存在的fine.html链接，避免点击404 -->
-            <!-- 修复2：确保img标签无多余空格 -->
             <a href="fine.html" class="comic-card">
                 <img src="111.jpg">
                 <div class="card-title">工作室的午后</div>
@@ -328,15 +378,15 @@ body {
             </a>
         </div>
 
-        <!-- 第二组漫画：Trickstar 日常小剧场 -->
+        <!-- Trickstar相关（可自行添加跳转） -->
         <div class="comic-group" id="group2">
-            <div class="comic-card">
+            <a href="comic2-page1.html" class="comic-card">
                 <img src="111.jpg">
                 <div class="card-title">早餐的争吵</div>
-            </div>
+            </a>
         </div>
 
-        <!-- 其他空组保留，后续可自行添加内容 -->
+        <!-- 其他空组保留 -->
         <div class="comic-group" id="group3"></div>
         <div class="comic-group" id="group4"></div>
         <div class="comic-group" id="group5"></div>
@@ -373,4 +423,3 @@ items.forEach(item => {
 
 </body>
 </html>
-
