@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>偶像梦幻祭2 同人漫画画廊</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #121212;
+    color: #fff;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+/* 顶部大横幅 */
+.banner {
+    width: 100%;
+    height: 420px;
+    background-image: url(pic/ens.jpg);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.banner::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to top, #121212 0%, transparent 50%);
+}
+
+/* 主布局 */
+.wrap {
+    max-width: 1600px;
+    margin: -100px auto 0;
+    padding: 0 20px;
+    display: flex;
+    gap: 30px;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 80px;
+}
+
+/* 左侧：横向长条封面列表（可滚动） */
+.left {
+    width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 700px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    background: #1a1a1d;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 2px solid transparent;
+}
+.item:hover, .item.active {
+    background: #252529;
+    border-color: #ff5588;
+    transform: translateX(6px);
+}
+.item img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+.item .text {
+    flex: 1;
+}
+.item .title {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+.item .info {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* 右侧：多图水墨晕染展示区 */
+.right {
+    flex: 1;
+    background: radial-gradient(circle at center, rgba(22,22,28,0.8) 0%, rgba(18,18,18,0) 85%);
+    backdrop-filter: blur(8px);
+    border-radius: 0;
+    padding: 30px;
+    min-height: 700px;
+    border: none;
+}
+/* 漫画组容器，默认隐藏，激活时显示 */
+.comic-group {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    width: 100%;
+    height: 100%;
+}
+.comic-group.active {
+    display: grid;
+}
+/* 漫画卡片+水墨晕染效果 */
+.comic-card {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+.comic-card:hover {
+    transform: translateY(-8px);
+}
+/* 核心：图片本体水墨晕染 */
+.comic-card img {
+    width :40;
+    height: 130px;
+    object-fit: cover;
+    /* 图片从中心向四周逐渐透明，实现水墨晕开效果 */
+    mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.6));
+}
+.comic-card .card-title {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+}
+
+.comic-card {
+  display: flex;
+  flex-direction: column; /* 垂直排列图片和文字 */
+  align-items: center;   /* 水平居中 */
+  justify-content: center;/* 垂直居中（可选） */
+}
+
+/* 基础样式：所有屏幕都生效的Flex居中+自适应 */
+.comic-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px; /* 电脑端卡片最大宽度 */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.comic-card img {
+  width: 100%;
+  height: auto;
+  max-width: 480px; /* 电脑端图片最大宽度 */
+  max-height: 400px; /* 电脑端图片最大高度 */
+  object-fit: contain;
+  margin: 0;
+}
+
+/* 响应式媒体查询：屏幕宽度≤768px（手机/平板）时生效 */
+@media (max-width: 768px) {
+  /* 手机端：卡片占满屏幕宽度，没有最大宽度限制 */
+  .comic-card {
+    max-width: 100%;
+  }
+  /* 手机端：图片最大高度缩小，避免占满屏幕 */
+  .comic-card img {
+    max-height: 300px;
+    /* 可选：如果想让手机端图片更窄，可加 max-width: 90%; */
+  }
+}
+
+/* 可选：再加一个平板适配（屏幕≤1024px） */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .comic-card img {
+    max-height: 350px; /* 平板端图片高度介于手机和电脑之间 */
+  }
+}
+
+/* 滚动条美化 */
+.left::-webkit-scrollbar { width: 6px }
+.left::-webkit-scrollbar-thumb { background: #555; border-radius: 10px }
+</style>
+</head>
+
+<body>
+
+<!-- 顶部大横幅 -->
+<div class="banner"></div>
+
+<div class="wrap">
+    <!-- 左侧：漫画列表（可滚动） -->
+    <div class="left" id="comicList">
+
+        <div class="item active" data-group="group0">
+            <img src="pic/ens.jpg" alt="目录">
+            <div class="text">
+                <div class="title">目录</div>
+            </div>
+        </div>
+
+        <div class="item active" data-group="group1">
+            <img src="pic/11.jpg"  alt="fine相关">
+            <div class="text">
+                <div class="title">fine相关</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group2">
+           <img src="pic/5.jpg" alt="TrickStar相关">
+            <div class="text">
+                <div class="title">Trickstar 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group3">
+           <img src="pic/1.jpg" alt="Eden相关">
+            <div class="text">
+                <div class="title">Eden 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group4">
+           <img src="pic/2.jpg" alt="Knights相关">
+            <div class="text">
+                <div class="title">Knights 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+         <div class="item" data-group="group5">
+           <img src="pic/3.jpg" alt="Switch相关">
+            <div class="text">
+                <div class="title">Switch 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group6">
+           <img src="pic/4.jpg" alt="流星队相关">
+            <div class="text">
+                <div class="title">流星队 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group7">
+           <img src="pic/10.jpg" alt="Valkyrie相关">
+            <div class="text">
+                <div class="title">Valkyrie 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group8">
+           <img src="pic/8.jpg" alt="Alkaloid相关">
+            <div class="text">
+                <div class="title">Alkaloid 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group9">
+           <img src="pic/9.jpg" alt="2wink相关">
+            <div class="text">
+                <div class="title">2wink 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group10">
+           <img src="pic/6.jpg" alt="红月相关">
+            <div class="text">
+                <div class="title">红月 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group11">
+           <img src="pic/12.jpg" alt="MaM相关">
+            <div class="text">
+                <div class="title">MaM 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group12">
+           <img src="pic/13.jpg" alt="Crazy：B相关">
+            <div class="text">
+                <div class="title">Crazy：B 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+        <div class="item" data-group="group13">
+           <img src="pic/14.jpg" alt="Rabbits相关">
+            <div class="text">
+                <div class="title">Rabbits 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+        <div class="item" data-group="group14">
+           <img src="pic/7.jpg" alt="Undead相关">
+            <div class="text">
+                <div class="title">Undead 日常小剧场</div>
+                <div class="info">共 0 篇</div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- 右侧：多图水墨晕染展示区 -->
+    <div class="right" id="previewArea">
+
+        <div class="comic-group active" id="group1">
+            <a href=" fine.html" class="comic-card">
+             <img src="pic/111.jpg" class="comic-card">
+                <div class="card-title">工作室的午后</div>
+            </a >
+            <a href="qiren.html" class="comic-card">
+                <img src="pic/qiren/u.jpg" class="comic-card">
+                <div class="card-title">被爱的零酱（五奇人本）涉和夏目篇</div>
+            </a >
+        </div>
+
+        <!-- 第二组漫画：Trickstar 日常小剧场 -->
+        <div class="comic-group" id="group2">
+            <a href="comic2-page1.html" class="comic-card">
+                < img src="pic/111.jpg">
+                <div class="card-title">早餐的争吵</div>
+            </a >
+
+        </div>
+        <!-- 第三组漫画：Undead 舞台后台故事 -->
+        <div class="comic-group" id="group14">
+
+
+        </div>
+
+        <!-- 第四组漫画：Knights 骑士团日常 -->
+        <div class="comic-group" id="group4">
+
+        </div>
+
+        <!-- 第五组漫画：全员新年特别篇 -->
+        <div class="comic-group" id="group5">
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+// 点击左侧列表切换右侧漫画组
+const items = document.querySelectorAll('.item');
+const groups = document.querySelectorAll('.comic-group');
+
+items.forEach(item => {
+    item.addEventListener('click', () => {
+        // 移除所有激活状态
+        items.forEach(i => i.classList.remove('active'));
+        groups.forEach(g => g.classList.remove('active'));
+
+        // 给当前点击的添加激活状态
+        item.classList.add('active');
+        const targetGroup = item.getAttribute('data-group');
+        document.getElementById(targetGroup).classList.add('active');
+    });
+});
+</script>
+
+</body>
+</html>

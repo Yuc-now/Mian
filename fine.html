@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新圣域</title>
+    <style>
+        /* 全局重置，消除默认边距和滚动条干扰 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 页面主体：让漫画区域居中，背景柔和衬托图片 */
+        body {
+            background-color: #f5f5f5; /* 浅灰色背景，不刺眼 */
+            min-height: 100vh; /* 占满屏幕高度 */
+            display: flex;
+            flex-direction: column; /* 纵向排列（适配多幅漫画） */
+            align-items: center; /* 水平居中 */
+            padding: 20px 0; /* 上下留空，避免贴边 */
+        }
+
+        /* 漫画图片样式：在60%基础上再缩小一半，最终为屏幕宽度的30% */
+        img {
+            /* 60% × 1/2 = 30%，精准缩小到目标尺寸 */
+            max-width: 30%;
+            /* 高度自适应：保持漫画比例，不拉伸变形 */
+            height: auto;
+            /* 轻微阴影：让图片和背景分离，更突出 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            /* 圆角：柔和边缘，避免生硬 */
+            border-radius: 4px;
+            /* 间距：后续加多幅漫画时，每幅之间留空 */
+            margin-bottom: 15px;
+            /* 加一点内边距+白色底：如果漫画边缘有白边，不会和背景融在一起 */
+            background-color: #fff;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 单张漫画 -->
+   <img src="pic/11.jpg" >
+       <img src="https://s41.ax1x.com/2026/02/16/pZLIb3F.jpg" >
+       <img src="https://s41.ax1x.com/2026/02/16/pZLIThT.jpg" >
+       <img src="https://s41.ax1x.com/2026/02/16/pZLIoNV.jpg" >
+        <img src="https://s41.ax1x.com/2026/02/16/pZLIb3F.jpg" >
+       <img src="https://s41.ax1x.com/2026/02/16/pZLIThT.jpg" >
+       <img src="https://s41.ax1x.com/2026/02/16/pZLIoNV.jpg" >
+
+    <!-- 后续添加多幅漫画，直接复制下面这行即可，会自动竖排 -->
+    <!-- <img src="pic/12.jpg" alt="新圣域漫画"> -->
+    <!-- <img src="pic/13.jpg" alt="新圣域漫画"> -->
+</body>
+</html>
+    <!-- 单张漫画 -->
