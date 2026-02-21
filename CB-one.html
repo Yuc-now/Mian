@@ -1,11 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>蜂CB向</title>
-
+    <!-- 沿用原有样式文件，如果style.css在同一目录就保留，否则替换为实际路径 -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 新增Komga跳转按钮样式，和原有按钮风格统一 */
+        .komga-jump-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 100;
+        }
+        .komga-jump-btn:hover {
+            background-color: #0052a3;
+        }
+        /* 如果没有外部style.css，补充基础样式保证页面正常显示 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            position: relative;
+            min-height: 100vh;
+        }
+        .comic-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #comicImage {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        .page-indicator {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #333;
+        }
+        .control-panel {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 8px;
+            background-color: #0066cc;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 5px;
+        }
+        .control-btn:hover {
+            background-color: #0052a3;
+        }
+        .menu-btn {
+            font-size: 14px;
+        }
+        .back-btn {
+            font-size: 16px;
+        }
+        .page-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .page-menu.show {
+            display: flex;
+        }
+        .menu-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        #closeMenu {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .menu-pages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .menu-pages button {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .menu-pages button.active {
+            background-color: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+    </style>
 </head>
 <body>
+    <!-- 新增Komga跳转按钮 -->
+    <button class="komga-jump-btn" id="komgaJumpBtn">打开Komga漫画系列</button>
 
+    <!-- 漫画主图区域 -->
+    <div class="comic-wrapper">
+        <img id="comicImage" src="" alt="漫画页">
+        <div class="page-indicator" id="pageIndicator">1 / All</div>
+    </div>
+
+    <!-- 右侧控制栏（保留返回按钮） -->
+    <div class="control-panel">
+        <button class="control-btn" id="pageUp">↑</button>
+        <button class="control-btn menu-btn" id="menuBtn">All<br>菜单</button>
+        <button class="control-btn" id="pageDown">↓</button>
+        <button class="control-btn back-btn" id="backBtn">←<br>返回主页面</button>
+    </div>
+
+    <!-- 分页菜单（默认隐藏） -->
+    <div class="page-menu" id="pageMenu">
+        <div class="menu-header">
+            <span>选择页码</span>
+            <button id="closeMenu">×</button>
+        </div>
+        <div class="menu-pages" id="menuPages"></div>
+    </div>
+
+    <script>
+        // ========== 配置你的漫画页路径（按需修改） ==========
+        const comicPages = [
+            // 这里替换成这个页面对应的漫画图片路径
+            "feng1.jpg",
+            "feng2.jpg",
+            "feng3.jpg"
+            // 继续添加你的所有图片文件名...
+        ];
+
+        // Komga系列链接配置
+        const komgaSeriesUrl = "http://localhost:8077/series/0PJ4QCDYC0GFD";
+
+        let currentPage = 0;
+        const totalPages = comicPages.length;
+
+        const comicImage = document.getElementById("comicImage");
+        const pageIndicator = document.getElementById("pageIndicator");
+        const pageUp = document.getElementById("pageUp");
+        const pageDown = document.getElementById("pageDown");
+        const menuBtn = document.getElementById("menuBtn");
+        const closeMenu = document.getElementById("closeMenu");
+        const pageMenu = document.getElementById("pageMenu");
+        const menuPages = document.getElementById("menuPages");
+        const backBtn = document.getElementById("backBtn");
+        const komgaJumpBtn = document.getElementById("komgaJumpBtn");
+
+        // 初始化显示第一页
+        function init() {
+            updateComic();
+            createPageMenu();
+        }
+
+        // 更新漫画和页码指示器
+        function updateComic() {
+            comicImage.src = comicPages[currentPage];
+            pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+        }
+
+        // 上一页
+        function goPrev() {
+            if (currentPage > 0) {
+                currentPage--;
+                updateComic();
+            }
+        }
+
+        // 下一页
+        function goNext() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updateComic();
+            }
+        }
+
+        // 跳转到指定页
+        function goToPage(index) {
+            currentPage = index;
+            updateComic();
+            pageMenu.classList.remove("show");
+        }
+
+        // 返回主页面
+        function goToMainPage() {
+            window.location.href = "index.html";
+        }
+
+        // 跳转到Komga系列页面
+        function jumpToKomgaSeries() {
+            window.open(komgaSeriesUrl, "_blank"); // 新窗口打开，不影响当前阅读页
+        }
+
+        // 生成分页菜单按钮
+        function createPageMenu() {
+            menuPages.innerHTML = "";
+            for (let i = 0; i < totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i + 1;
+                btn.onclick = () => goToPage(i);
+                if (i === currentPage) btn.classList.add("active");
+                menuPages.appendChild(btn);
+            }
+        }
+
+        // 监听键盘方向键
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowLeft") goPrev();
+            if (e.key === "ArrowDown" || e.key === "ArrowRight") goNext();
+        });
+
+        // 绑定按钮事件
+        pageUp.addEventListener("click", goPrev);
+        pageDown.addEventListener("click", goNext);
+        menuBtn.addEventListener("click", () => pageMenu.classList.add("show"));
+        closeMenu.addEventListener("click", () => pageMenu.classList.remove("show"));
+        backBtn.addEventListener("click", goToMainPage);
+        komgaJumpBtn.addEventListener("click", jumpToKomgaSeries);
+
+        window.onload = init;
+    </script>
 </body>
 </html>
