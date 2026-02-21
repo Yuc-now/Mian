@@ -120,7 +120,8 @@ body {
 }
 .comic-card img {
     width: 100%;
-    height: 130px;
+    height: auto;
+    max-height: 400px;
     object-fit: cover;
     mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
     -webkit-mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
@@ -256,8 +257,6 @@ body {
                 <div class="title">MaM 日常小剧场</div>
             </div>
         </div>
-
-        <!-- Crazy:B 正常显示 -->
         <div class="item" data-group="group12">
             <img src="13.jpg" alt="Crazy：B相关">
             <div class="text">
@@ -265,7 +264,6 @@ body {
                 <div class="info">共 1 篇</div>
             </div>
         </div>
-
         <div class="item" data-group="group13">
             <img src="14.jpg" alt="Rabbits相关">
             <div class="text">
@@ -316,12 +314,15 @@ body {
         <div class="comic-group" id="group10"></div>
         <div class="comic-group" id="group11"></div>
 
-       <div class="comic-group" id="group12">
-    <a href="http://localhost:8077/book/0PJ4QCDZ00NQ1/read?page=1&incognito=false" target="_blank" class="comic-card">
-        <img src="pic/CB幼年.jpg" alt="互相照顾幼年本">
-        <div class="card-title">互相照顾幼年本</div>
-    </a>
-</div>
+        <!-- ========== Crazy：B 最终修复 ========== -->
+        <div class="comic-group" id="group12">
+            <!-- 线上版本：先不跳转（避免404），只显示封面 -->
+            <a href="#" class="comic-card">
+                <!-- 封面用GitHub仓库里的路径，确保能访问 -->
+                <img src="CB幼年.jpg" alt="互相照顾幼年本">
+                <div class="card-title">互相照顾幼年本</div>
+            </a>
+        </div>
 
         <div class="comic-group" id="group13"></div>
         <div class="comic-group" id="group14"></div>
@@ -329,6 +330,7 @@ body {
 </div>
 
 <script>
+// 核心切换逻辑（最简版，绝对不报错）
 const items = document.querySelectorAll('.item');
 const groups = document.querySelectorAll('.comic-group');
 
@@ -345,5 +347,3 @@ items.forEach(item => {
 
 </body>
 </html>
-
-
