@@ -17,7 +17,6 @@ body {
     font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
 }
 
-/* 顶部大横幅 */
 .banner {
     width: 100%;
     height: 420px;
@@ -34,7 +33,6 @@ body {
     background: linear-gradient(to top, #121212 0%, transparent 50%);
 }
 
-/* 主布局 */
 .wrap {
     max-width: 1600px;
     margin: -100px auto 0;
@@ -46,7 +44,6 @@ body {
     padding-bottom: 80px;
 }
 
-/* 左侧：横向长条封面列表（可滚动） */
 .left {
     width: 460px;
     display: flex;
@@ -90,7 +87,6 @@ body {
     color: #aaa;
 }
 
-/* 右侧：多图水墨晕染展示区 */
 .right {
     flex: 1;
     background: radial-gradient(circle at center, rgba(22,22,28,0.8) 0%, rgba(18,18,18,0) 85%);
@@ -100,7 +96,6 @@ body {
     min-height: 700px;
     border: none;
 }
-/* 漫画组容器，默认隐藏，激活时显示 */
 .comic-group {
     display: none;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -111,21 +106,22 @@ body {
 .comic-group.active {
     display: grid;
 }
-/* 漫画卡片+水墨晕染效果 */
 .comic-card {
     display: block;
     text-decoration: none;
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .comic-card:hover {
     transform: translateY(-8px);
 }
-/* 核心：图片本体水墨晕染 */
 .comic-card img {
     width: 100%;
     height: 130px;
     object-fit: cover;
-    /* 图片从中心向四周逐渐透明，实现水墨晕开效果 */
     mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
     -webkit-mask-image: radial-gradient(circle at center, #000 58%, transparent 92%);
     filter: drop-shadow(0 0 20px rgba(0,0,0,0.6));
@@ -137,58 +133,22 @@ body {
     text-align: center;
 }
 
-.comic-card {
-  display: flex;
-  flex-direction: column; /* 垂直排列图片和文字 */
-  align-items: center;   /* 水平居中 */
-  justify-content: center;/* 垂直居中（可选） */
-}
-
-/* 基础样式：所有屏幕都生效的Flex居中+自适应 */
-.comic-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 500px; /* 电脑端卡片最大宽度 */
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.comic-card img {
-  width: 100%;
-  height: auto;
-  max-width: 480px; /* 电脑端图片最大宽度 */
-  max-height: 400px; /* 电脑端图片最大高度 */
-  object-fit: contain;
-  margin: 0;
-}
-
-/* 滚动条美化 */
 .left::-webkit-scrollbar { width: 6px }
 .left::-webkit-scrollbar-thumb { background: #555; border-radius: 10px }
 
-/* ========== 核心优化：手机端适配（解决拥挤） ========== */
-/* 手机端（屏幕≤768px） */
 @media (max-width: 768px) {
-  /* 1. 主布局从左右分栏改为上下堆叠 */
   .wrap {
     flex-direction: column;
     margin-top: -50px;
     padding: 0 10px;
     gap: 15px;
   }
-
-  /* 2. 左侧列表改为横向滚动，缩小高度，不占垂直空间 */
   .left {
     width: 100%;
     max-height: 120px;
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
-    padding-right: 0;
-    padding-bottom: 8px;
   }
   .item {
     min-width: 140px;
@@ -196,47 +156,21 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 10px;
   }
   .item img {
     width: 50px;
     height: 50px;
   }
-  .item .title {
-    font-size: 13px;
-    margin-top: 6px;
-  }
-  .item .info {
-    display: none; /* 隐藏多余文字，节省空间 */
-  }
-
-  /* 3. 右侧展示区缩小内边距，图片更适配手机 */
   .right {
     min-height: auto;
     padding: 15px;
   }
   .comic-group {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px; /* 缩小图片间距，更宽松 */
+    gap: 12px;
   }
-  .comic-card img {
-    max-height: 200px; /* 缩小手机端图片高度 */
-  }
-
-  /* 4. 顶部横幅缩小高度，适配手机屏幕 */
   .banner {
     height: 200px;
-  }
-}
-
-/* 平板端（769px~1024px） */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .comic-card img {
-    max-height: 350px;
-  }
-  .wrap {
-    gap: 20px;
-    padding: 0 15px;
   }
 }
 </style>
@@ -244,11 +178,9 @@ body {
 
 <body>
 
-<!-- 顶部大横幅 -->
 <div class="banner"></div>
 
 <div class="wrap">
-    <!-- 左侧：漫画列表（可滚动） -->
     <div class="left" id="comicList">
         <div class="item active" data-group="group0">
             <img src="ens.jpg" alt="目录">
@@ -257,108 +189,98 @@ body {
             </div>
         </div>
         <div class="item" data-group="group1">
-            <img src="11.jpg"  alt="fine相关">
+            <img src="11.jpg" alt="fine相关">
             <div class="text">
                 <div class="title">fine相关</div>
-                <div class="info">共 2 篇</div> <!-- 修正数量 -->
+                <div class="info">共 2 篇</div>
             </div>
         </div>
         <div class="item" data-group="group2">
-           <img src="5.jpg" alt="TrickStar相关">
+            <img src="5.jpg" alt="TrickStar相关">
             <div class="text">
                 <div class="title">Trickstar 日常小剧场</div>
-                <div class="info">共 1 篇</div> <!-- 修正数量 -->
+                <div class="info">共 1 篇</div>
             </div>
         </div>
         <div class="item" data-group="group3">
-           <img src="1.jpg" alt="Eden相关">
+            <img src="1.jpg" alt="Eden相关">
             <div class="text">
                 <div class="title">Eden 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group4">
-           <img src="2.jpg" alt="Knights相关">
+            <img src="2.jpg" alt="Knights相关">
             <div class="text">
                 <div class="title">Knights 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
-         <div class="item" data-group="group5">
-           <img src="3.jpg" alt="Switch相关">
+        <div class="item" data-group="group5">
+            <img src="3.jpg" alt="Switch相关">
             <div class="text">
                 <div class="title">Switch 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group6">
-           <img src="4.jpg" alt="流星队相关">
+            <img src="4.jpg" alt="流星队相关">
             <div class="text">
                 <div class="title">流星队 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group7">
-           <img src="10.jpg" alt="Valkyrie相关">
+            <img src="10.jpg" alt="Valkyrie相关">
             <div class="text">
                 <div class="title">Valkyrie 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group8">
-           <img src="8.jpg" alt="Alkaloid相关">
+            <img src="8.jpg" alt="Alkaloid相关">
             <div class="text">
                 <div class="title">Alkaloid 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group9">
-           <img src="9.jpg" alt="2wink相关">
+            <img src="9.jpg" alt="2wink相关">
             <div class="text">
                 <div class="title">2wink 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group10">
-           <img src="6.jpg" alt="红月相关">
+            <img src="6.jpg" alt="红月相关">
             <div class="text">
                 <div class="title">红月 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group11">
-           <img src="12.jpg" alt="MaM相关">
+            <img src="12.jpg" alt="MaM相关">
             <div class="text">
                 <div class="title">MaM 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
+
+        <!-- Crazy:B 正常显示 -->
         <div class="item" data-group="group12">
-           <img src="13.jpg" alt="Crazy：B相关">
+            <img src="13.jpg" alt="Crazy：B相关">
             <div class="text">
                 <div class="title">Crazy：B 日常小剧场</div>
-                <div class="info">共 1 篇</div> <!-- 修正数量 -->
+                <div class="info">共 1 篇</div>
             </div>
         </div>
+
         <div class="item" data-group="group13">
-           <img src="14.jpg" alt="Rabbits相关">
+            <img src="14.jpg" alt="Rabbits相关">
             <div class="text">
                 <div class="title">Rabbits 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
         <div class="item" data-group="group14">
-           <img src="7.jpg" alt="Undead相关">
+            <img src="7.jpg" alt="Undead相关">
             <div class="text">
                 <div class="title">Undead 日常小剧场</div>
-                <div class="info">共 0 篇</div>
             </div>
         </div>
     </div>
 
-    <!-- 右侧：多图水墨晕染展示区（修复group12并添加Komga封面） -->
     <div class="right" id="previewArea">
-        <!-- 目录组 -->
         <div class="comic-group active" id="group0">
             <div class="comic-card">
                 <img src="ens.jpg">
@@ -366,7 +288,6 @@ body {
             </div>
         </div>
 
-        <!-- fine相关（恢复fine.html/qiren.html跳转） -->
         <div class="comic-group" id="group1">
             <a href="fine.html" class="comic-card">
                 <img src="111.jpg">
@@ -378,7 +299,6 @@ body {
             </a>
         </div>
 
-        <!-- Trickstar相关（可自行添加跳转） -->
         <div class="comic-group" id="group2">
             <a href="comic2-page1.html" class="comic-card">
                 <img src="111.jpg">
@@ -386,7 +306,6 @@ body {
             </a>
         </div>
 
-        <!-- 其他空组保留 -->
         <div class="comic-group" id="group3"></div>
         <div class="comic-group" id="group4"></div>
         <div class="comic-group" id="group5"></div>
@@ -396,49 +315,31 @@ body {
         <div class="comic-group" id="group9"></div>
         <div class="comic-group" id="group10"></div>
         <div class="comic-group" id="group11"></div>
-        
-        <!-- ===== 修复核心：Crazy：B相关（添加互相照顾幼年本卡片）===== -->
+
+        <!-- ================== 这里修好了！本地封面，不用Komga ================== -->
         <div class="comic-group" id="group12">
-            <!-- 互相照顾幼年本卡片（Komga封面） -->
-            <a href="fengCB.html" class="comic-card">
-                <!-- 替换下面的URL为你从Komga复制的封面链接 -->
-                <img src="http://localhost:8077/api/v1/books/0PJ4QCDYC0GFD/thumbnail" alt="互相照顾幼年本封面">
+            <a href="comic2-page1.html" class="comic-card">
+                <img src="pic/CB幼年.jpg" alt="互相照顾幼年本">
                 <div class="card-title">互相照顾幼年本</div>
             </a>
         </div>
-        
+
         <div class="comic-group" id="group13"></div>
         <div class="comic-group" id="group14"></div>
     </div>
 </div>
 
 <script>
-// 点击左侧列表切换右侧漫画组
 const items = document.querySelectorAll('.item');
 const groups = document.querySelectorAll('.comic-group');
 
 items.forEach(item => {
     item.addEventListener('click', () => {
-        // 移除所有激活状态
         items.forEach(i => i.classList.remove('active'));
         groups.forEach(g => g.classList.remove('active'));
-
-        // 给当前点击的添加激活状态
         item.classList.add('active');
         const targetGroup = item.getAttribute('data-group');
         document.getElementById(targetGroup).classList.add('active');
-    });
-});
-
-// 可选：自动加载Komga封面失败时显示默认图（防止封面加载失败）
-document.addEventListener('DOMContentLoaded', () => {
-    const comicImgs = document.querySelectorAll('.comic-card img');
-    comicImgs.forEach(img => {
-        img.onerror = function() {
-            // 封面加载失败时显示默认图
-            this.src = '13.jpg';
-            this.alt = '默认封面';
-        };
     });
 });
 </script>
