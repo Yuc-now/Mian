@@ -1,0 +1,144 @@
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f0f0f0;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* 漫画图片容器 */
+.comic-wrapper {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.comic-wrapper img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 右下角页码指示器 */
+.page-indicator {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 右侧控制栏 */
+.control-panel {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.control-btn:hover {
+    background: #444;
+}
+
+/* 菜单按钮样式 */
+.menu-btn {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* 新增：返回按钮样式（和其他按钮统一风格） */
+.back-btn {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* 分页菜单（默认隐藏） */
+.page-menu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-menu.show {
+    right: 0;
+}
+
+.menu-header {
+    padding: 16px;
+    background: #222;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.menu-pages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.menu-pages button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.menu-pages button:hover {
+    background: #f5f5f5;
+}
+
+.menu-pages button.active {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+}
