@@ -1,53 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>被爱的零酱（五奇人本）涉和夏目篇</title>
-     <style>
-        /* 全局重置，消除默认边距和滚动条干扰 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* 页面主体：让漫画区域居中，背景柔和衬托图片 */
-        body {
-            background-color: #f5f5f5; /* 浅灰色背景，不刺眼 */
-            min-height: 100vh; /* 占满屏幕高度 */
-            display: flex;
-            flex-direction: column; /* 纵向排列（适配多幅漫画） */
-            align-items: center; /* 水平居中 */
-            padding: 20px 0; /* 上下留空，避免贴边 */
-        }
-
-        /* 漫画图片样式：在60%基础上再缩小一半，最终为屏幕宽度的30% */
-        img {
-            /* 60% × 1/2 = 30%，精准缩小到目标尺寸 */
-            max-width: 30%;
-            /* 高度自适应：保持漫画比例，不拉伸变形 */
-            height: auto;
-            /* 轻微阴影：让图片和背景分离，更突出 */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            /* 圆角：柔和边缘，避免生硬 */
-            border-radius: 4px;
-            /* 间距：后续加多幅漫画时，每幅之间留空 */
-            margin-bottom: 15px;
-            /* 加一点内边距+白色底：如果漫画边缘有白边，不会和背景融在一起 */
-            background-color: #fff;
-            padding: 5px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>被爱的零酱（五奇人本）涉和夏目</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-       <img src="u.jpg" >
-        <img src="u1.jpg" >
-       <img src="u2.jpg" >
-       <img src="u3.jpg" >
-       <img src="u4.jpg" >
-       <img src="u5.jpg" >
-       <img src="u6.jpg" >
-       <img src="u7.jpg" >
-</body>
+    <!-- 漫画主图区域 -->
+    <div class="comic-wrapper">
+        <img id="comicImage" src="" alt="漫画页">
+        <div class="page-indicator" id="pageIndicator">1 / All</div>
+    </div>
 
+    <!-- 右侧控制栏（新增返回按钮） -->
+    <div class="control-panel">
+        <button class="control-btn" id="pageUp">↑</button>
+        <button class="control-btn menu-btn" id="menuBtn">All<br>菜单</button>
+        <button class="control-btn" id="pageDown">↓</button>
+        <!-- 新增返回主页面按钮 -->
+        <button class="control-btn back-btn" id="backBtn">←<br>返回主页面</button>
+    </div>
+
+    <!-- 分页菜单（默认隐藏） -->
+    <div class="page-menu" id="pageMenu">
+        <div class="menu-header">
+            <span>选择页码</span>
+            <button id="closeMenu">×</button>
+        </div>
+        <div class="menu-pages" id="menuPages"></div>
+    </div>
+
+    <script>
+        // ========== 配置你的漫画页路径 ==========
+        const comicPages = [
+            "u.jpg",
+            "u1.jpg",
+            "u2.jpg",
+            "u3.jpg",
+            "u4.jpg",
+            "u5.jpg",
+            "u6.jpg",
+            "u7.jpg"
+            // 继续添加你的所有图片文件名...
+        ];
+
+        let currentPage = 0;
+        const totalPages = comicPages.length;
+
+        const comicImage = document.getElementById("comicImage");
+        const pageIndicator = document.getElementById("pageIndicator");
+        const pageUp = document.getElementById("pageUp");
+        const pageDown = document.getElementById("pageDown");
+        const menuBtn = document.getElementById("menuBtn");
+        const closeMenu = document.getElementById("closeMenu");
+        const pageMenu = document.getElementById("pageMenu");
+        const menuPages = document.getElementById("menuPages");
+        // 获取返回按钮
+        const backBtn = document.getElementById("backBtn");
+
+        // 初始化显示第一页
+        function init() {
+            updateComic();
+            createPageMenu();
+        }
+
+        // 更新漫画和页码指示器
+        function updateComic() {
+            comicImage.src = comicPages[currentPage];
+            pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+        }
+
+        // 上一页
+        function goPrev() {
+            if (currentPage > 0) {
+                currentPage--;
+                updateComic();
+            }
+        }
+
+        // 下一页
+        function goNext() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updateComic();
+            }
+        }
+
+        // 跳转到指定页
+        function goToPage(index) {
+            currentPage = index;
+            updateComic();
+            pageMenu.classList.remove("show");
+        }
+
+        // 新增：返回主页面函数
+        function goToMainPage() {
+            window.location.href = "introduce.html";
+        }
+
+        // 生成分页菜单按钮
+        function createPageMenu() {
+            menuPages.innerHTML = "";
+            for (let i = 0; i < totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i + 1;
+                btn.onclick = () => goToPage(i);
+                if (i === currentPage) btn.classList.add("active");
+                menuPages.appendChild(btn);
+            }
+        }
+
+        // 监听键盘方向键
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowLeft") goPrev();
+            if (e.key === "ArrowDown" || e.key === "ArrowRight") goNext();
+        });
+
+        // 绑定按钮事件
+        pageUp.addEventListener("click", goPrev);
+        pageDown.addEventListener("click", goNext);
+        menuBtn.addEventListener("click", () => pageMenu.classList.add("show"));
+        closeMenu.addEventListener("click", () => pageMenu.classList.remove("show"));
+        // 绑定返回按钮事件
+        backBtn.addEventListener("click", goToMainPage);
+
+        window.onload = init;
+    </script>
+</body>
 </html>
