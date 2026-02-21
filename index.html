@@ -133,19 +133,6 @@ body {
     text-align: center;
 }
 
-/* 封面加载失败兜底样式 */
-.comic-card img[alt="互相照顾幼年本"] {
-    /* 封面加载失败时显示背景色，避免空白 */
-    background-color: #252529;
-    /* 兜底文字提示 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
-}
-
 .left::-webkit-scrollbar { width: 6px }
 .left::-webkit-scrollbar-thumb { background: #555; border-radius: 10px }
 
@@ -329,12 +316,9 @@ body {
         <div class="comic-group" id="group10"></div>
         <div class="comic-group" id="group11"></div>
 
-        <!-- ===== 最终修复：Crazy：B相关（跳转+封面都正常）===== -->
         <div class="comic-group" id="group12">
-            <!-- 用你提供的Komga链接，新窗口打开不跳走 -->
             <a href="http://localhost:8077/book/0PJ4QCDZ00NQ1/read?page=1&incognito=false" target="_blank" class="comic-card">
-                <!-- 兼容pic分支路径，添加兜底（加载失败也不空白） -->
-                <img src="./pic/CB幼年.jpg" alt="互相照顾幼年本" onerror="this.src='./13.jpg'">
+                <img src="CB幼年.jpg" alt="互相照顾幼年本">
                 <div class="card-title">互相照顾幼年本</div>
             </a>
         </div>
@@ -345,7 +329,6 @@ body {
 </div>
 
 <script>
-// 点击左侧列表切换右侧漫画组
 const items = document.querySelectorAll('.item');
 const groups = document.querySelectorAll('.comic-group');
 
@@ -358,19 +341,6 @@ items.forEach(item => {
         document.getElementById(targetGroup).classList.add('active');
     });
 });
-
-// 额外：确保封面路径兼容pic/main分支（自动适配）
-window.onload = function() {
-    const cbCover = document.querySelector('img[alt="互相照顾幼年本"]');
-    // 先尝试pic路径，失败则尝试根路径，再失败用默认图
-    cbCover.onerror = function() {
-        if (this.src.includes('pic/')) {
-            this.src = './CB幼年.jpg'; // 尝试根路径
-        } else {
-            this.src = './13.jpg'; // 最终兜底图
-        }
-    };
-};
 </script>
 
 </body>
