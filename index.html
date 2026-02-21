@@ -122,7 +122,7 @@ body {
 }
 /* 核心：图片本体水墨晕染 */
 .comic-card img {
-    width :40;
+    width: 100%;
     height: 130px;
     object-fit: cover;
     /* 图片从中心向四周逐渐透明，实现水墨晕开效果 */
@@ -260,14 +260,14 @@ body {
             <img src="11.jpg"  alt="fine相关">
             <div class="text">
                 <div class="title">fine相关</div>
-                <div class="info">共 0 篇</div>
+                <div class="info">共 2 篇</div> <!-- 修正数量 -->
             </div>
         </div>
         <div class="item" data-group="group2">
            <img src="5.jpg" alt="TrickStar相关">
             <div class="text">
                 <div class="title">Trickstar 日常小剧场</div>
-                <div class="info">共 0 篇</div>
+                <div class="info">共 1 篇</div> <!-- 修正数量 -->
             </div>
         </div>
         <div class="item" data-group="group3">
@@ -337,7 +337,7 @@ body {
            <img src="13.jpg" alt="Crazy：B相关">
             <div class="text">
                 <div class="title">Crazy：B 日常小剧场</div>
-                <div class="info">共 0 篇</div>
+                <div class="info">共 1 篇</div> <!-- 修正数量 -->
             </div>
         </div>
         <div class="item" data-group="group13">
@@ -356,7 +356,7 @@ body {
         </div>
     </div>
 
-    <!-- 右侧：多图水墨晕染展示区（恢复完整跳转） -->
+    <!-- 右侧：多图水墨晕染展示区（修复group12并添加Komga封面） -->
     <div class="right" id="previewArea">
         <!-- 目录组 -->
         <div class="comic-group active" id="group0">
@@ -396,7 +396,17 @@ body {
         <div class="comic-group" id="group9"></div>
         <div class="comic-group" id="group10"></div>
         <div class="comic-group" id="group11"></div>
-        <div class="comic-group" id="group12"></div>
+        
+        <!-- ===== 修复核心：Crazy：B相关（添加互相照顾幼年本卡片）===== -->
+        <div class="comic-group" id="group12">
+            <!-- 互相照顾幼年本卡片（Komga封面） -->
+            <a href="fengCB.html" class="comic-card">
+                <!-- 替换下面的URL为你从Komga复制的封面链接 -->
+                <img src="http://localhost:8077/api/v1/books/0PJ4QCDYC0GFD/thumbnail" alt="互相照顾幼年本封面">
+                <div class="card-title">互相照顾幼年本</div>
+            </a>
+        </div>
+        
         <div class="comic-group" id="group13"></div>
         <div class="comic-group" id="group14"></div>
     </div>
@@ -417,6 +427,18 @@ items.forEach(item => {
         item.classList.add('active');
         const targetGroup = item.getAttribute('data-group');
         document.getElementById(targetGroup).classList.add('active');
+    });
+});
+
+// 可选：自动加载Komga封面失败时显示默认图（防止封面加载失败）
+document.addEventListener('DOMContentLoaded', () => {
+    const comicImgs = document.querySelectorAll('.comic-card img');
+    comicImgs.forEach(img => {
+        img.onerror = function() {
+            // 封面加载失败时显示默认图
+            this.src = '13.jpg';
+            this.alt = '默认封面';
+        };
     });
 });
 </script>
